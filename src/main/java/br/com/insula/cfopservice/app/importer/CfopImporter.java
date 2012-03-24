@@ -1,6 +1,6 @@
 package br.com.insula.cfopservice.app.importer;
 
-import static org.springframework.data.mongodb.core.query.Criteria.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Scanner;
