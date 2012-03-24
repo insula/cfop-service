@@ -36,7 +36,7 @@ public class HerokuMongoConfig implements MongoConfig {
 		URI mongoUri = new URI(env.getProperty(MONGO_URI));
 		String[] userInfo = mongoUri.getUserInfo().split(":");
 		UserCredentials credentials = new UserCredentials(userInfo[0], userInfo[1]);
-		return new SimpleMongoDbFactory(mongo(), mongoUri.getPath(), credentials);
+		return new SimpleMongoDbFactory(mongo(), mongoUri.getPath().substring(1), credentials);
 	}
 
 }
