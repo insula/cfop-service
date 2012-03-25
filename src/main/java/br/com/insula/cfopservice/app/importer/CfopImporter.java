@@ -37,7 +37,7 @@ public class CfopImporter {
 		while (scanner.hasNext()) {
 			String next = scanner.next();
 			String digitos = next.trim().replaceAll("\\D", "");
-			if (digitos.matches("\\d{4}")) {
+			if (next.matches("\\d.*") && digitos.matches("\\d{4}")) {
 				int codigo = Integer.parseInt(digitos);
 				System.out.println("Codigo: " + codigo);
 				if (digitos.endsWith("000")) {
@@ -72,19 +72,28 @@ public class CfopImporter {
 			else {
 				switch (tokenAnterior) {
 				case CODIGO:
-					System.out.println("Descricao: " + next);
-					codigoFiscal.setDescricao(next);
+					System.out.println("Descricao: " + removerObservacoes(next).trim());
+					codigoFiscal.setDescricao(removerObservacoes(next).trim());
 					tokenAnterior = TokenAnterior.DESCRICAO;
+					if (codigoFiscal instanceof SubGrupo) {
+						mongoOperations.save(codigoFiscal);
+					}
 					break;
 				case DESCRICAO:
-					System.out.println("Aplicacao: " + next);
-					codigoFiscal.setAplicacao(next);
+					System.out.println("Aplicacao: " + removerObservacoes(next).trim());
+					codigoFiscal.setAplicacao(removerObservacoes(next).trim());
+					if (!(codigoFiscal instanceof SubGrupo)) {
+						mongoOperations.save(codigoFiscal);
+					}
 					break;
 				}
-				mongoOperations.save(codigoFiscal);
 			}
 		}
 	};
+
+	private String removerObservacoes(String value) {
+		return value.replaceAll("\\s+", " ").trim();
+	}
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
